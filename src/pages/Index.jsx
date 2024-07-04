@@ -12,7 +12,8 @@ const fetchNews = async () => {
   }
   const response = await fetch(`https://newsapi.org/v2/everything?q=Ethiopia&apiKey=${apiKey}`);
   if (!response.ok) {
-    throw new Error("Network response was not ok");
+    const errorData = await response.json();
+    throw new Error(`Network response was not ok: ${errorData.message}`);
   }
   return response.json();
 };
