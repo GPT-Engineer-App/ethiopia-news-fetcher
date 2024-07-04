@@ -5,7 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const fetchNews = async () => {
-  const response = await fetch("https://newsapi.org/v2/everything?q=Ethiopia&apiKey=YOUR_API_KEY");
+  const apiKey = import.meta.env.VITE_NEWS_API_KEY;
+  const response = await fetch(`https://newsapi.org/v2/everything?q=Ethiopia&apiKey=${apiKey}`);
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
@@ -36,7 +37,7 @@ const Index = () => {
       {isLoading ? (
         <Skeleton className="w-full h-24 mb-4" />
       ) : error ? (
-        <div>Error fetching news</div>
+        <div className="text-red-500">Error fetching news: {error.message}</div>
       ) : (
         <div className="grid gap-4">
           {filteredNews.map((article, index) => (
