@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -6,6 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const fetchNews = async () => {
   const apiKey = import.meta.env.VITE_NEWS_API_KEY;
+  if (!apiKey) {
+    throw new Error("API key is missing");
+  }
   const response = await fetch(`https://newsapi.org/v2/everything?q=Ethiopia&apiKey=${apiKey}`);
   if (!response.ok) {
     throw new Error("Network response was not ok");
@@ -19,6 +23,12 @@ const Index = () => {
     queryKey: ["ethiopianNews"],
     queryFn: fetchNews,
   });
+
+  useEffect(() => {
+    if (error) {
+      toast.error(`Error fetching news: ${error.message}`);
+    }
+  }, [error]);
 
   const filteredNews = data?.articles.filter((article) =>
     article.title.toLowerCase().includes(searchTerm.toLowerCase())
